@@ -1,0 +1,44 @@
+#!/bin/bash
+export DISPLAY=:99
+export XDG_RUNTIME_DIR=/tmp/xdg
+export XAUTHORITY=${DATA_DIR}/.Xauthority
+export LANGUAGE="$LOCALE_USR"
+export LANG="$LOCALE_USR"
+
+echo "---Checking for old logfiles---"
+find ${DATA_DIR}/.logs -name "XvfbLog.*" -exec rm -f {} \;
+find ${DATA_DIR}/.logs -name "x11vncLog.*" -exec rm -f {} \;
+echo "---Checking for old lock files---"
+rm -rf /tmp/.X99*
+rm -rf /tmp/.X11*
+rm -rf ${DATA_DIR}/.vnc/*.log ${DATA_DIR}/.vnc/*.pid 
+chmod -R ${DATA_PERM} ${DATA_DIR}
+if [ -f ${DATA_DIR}/.vnc/passwd ]; then
+	chmod 600 ${DATA_DIR}/.vnc/passwd
+fi
+screen -wipe 2&>/dev/null
+find /var/run/dbus -name "pid" -exec rm -f {} \;
+
+echo "---Starting dbus service---"
+if dbus-daemon --config-file=/usr/share/dbus-1/system.conf ; then
+	echo "---dbus service started---"
+else
+	echo "---Couldn't start dbus service---"
+	sleep infinity
+fi
+sleep 2
+
+echo "---Starting TurboVNC server---"
+vncserver -geometry ${CUSTOM_RES_W}x${CUSTOM_RES_H} -depth ${CUSTOM_DEPTH} :99 -rfbport ${RFB_PORT} -noxstartup ${TURBOVNC_PARAMS} 2>/dev/null
+sleep 2
+
+echo "---Starting noVNC server---"
+websockify -D --web=/usr/share/novnc/ --cert=/etc/ssl/novnc.pem ${NOVNC_PORT} localhost:${RFB_PORT}
+sleep 2
+
+echo "---Starting Desktop---"
+if [ "${DEV}" == "true" ]; then
+	xfce4-session
+else
+	xfce4-session 2> /dev/null
+fi
