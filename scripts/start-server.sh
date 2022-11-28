@@ -19,14 +19,14 @@ fi
 screen -wipe 2&>/dev/null
 find /var/run/dbus -name "pid" -exec rm -f {} \;
 
-echo "---Starting dbus service---"
-if dbus-daemon --config-file=/usr/share/dbus-1/system.conf ; then
-	echo "---dbus service started---"
-else
-	echo "---Couldn't start dbus service---"
-	sleep infinity
-fi
-sleep 2
+#echo "---Starting dbus service---"
+#if dbus-daemon --config-file=/usr/share/dbus-1/system.conf ; then
+#	echo "---dbus service started---"
+#else
+#	echo "---Couldn't start dbus service---"
+#	sleep infinity
+#fi
+#sleep 2
 
 echo "---Starting TurboVNC server---"
 vncserver -geometry ${CUSTOM_RES_W}x${CUSTOM_RES_H} -depth ${CUSTOM_DEPTH} :99 -rfbport ${RFB_PORT} -noxstartup ${TURBOVNC_PARAMS} 2>/dev/null
