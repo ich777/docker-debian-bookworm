@@ -49,17 +49,17 @@ echo "---Checking configuration for noVNC---"
 novnccheck
 
 echo "---Taking ownership of data...---"
-rm -R ${DATA_DIR}/.dbus/session-bus/* 2> /dev/null
-if [ ! -d /var/run/dbus ]; then
-	mkdir -p /var/run/dbus
-fi
-chown -R ${UID}:${GID} /var/run/dbus/
-chmod -R 770 /var/run/dbus/
+#rm -R ${DATA_DIR}/.dbus/session-bus/* 2> /dev/null
+#if [ ! -d /var/run/dbus ]; then
+#	mkdir -p /var/run/dbus
+#fi
+#chown -R ${UID}:${GID} /var/run/dbus/
+#chmod -R 770 /var/run/dbus/
 chown -R root:${GID} /opt/scripts
 chmod -R 750 /opt/scripts
 chown -R ${UID}:${GID} /tmp/xdg
 chmod -R 0700 /tmp/xdg
-dbus-uuidgen > /var/lib/dbus/machine-id
+#dbus-uuidgen > /var/lib/dbus/machine-id
 rm -R /tmp/.* 2> /dev/null
 mkdir -p /tmp/.ICE-unix
 chown root:root /tmp/.ICE-unix/
