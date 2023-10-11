@@ -8,7 +8,7 @@ RUN export TZ=Europe/Rome && \
 	ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
 	echo $TZ > /etc/timezone && \
 	DEBIAN_FRONTEND=noninteractive apt-get -y install xfce4 xfce4-terminal xfce4-taskmanager dbus-x11 iputils-ping xarchiver bzip2 xz-utils unzip unrar zip binutils bash-completion procps traceroute telnet gvfs-backends gvfs-common gvfs-fuse gvfs firefox-esr curl unzip gedit ffmpeg flameshot jq fonts-vlgothic ttf-wqy-zenhei fonts-wqy-microhei fonts-takao fonts-arphic-uming fonts-noto-cjk msttcorefonts remmina && \
-	apt-get -y remove zutty puvacontroll && \
+	apt-get -y remove zutty && \
 	apt-get -y autoremove && \
 	rm -rf /var/lib/apt/lists/*
 
