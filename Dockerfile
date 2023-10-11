@@ -8,7 +8,8 @@ RUN export TZ=Europe/Rome && \
 	ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
 	echo $TZ > /etc/timezone && \
 	DEBIAN_FRONTEND=noninteractive apt-get -y install xfce4 xfce4-terminal xfce4-taskmanager dbus-x11 iputils-ping xarchiver bzip2 xz-utils unzip unrar zip binutils bash-completion procps traceroute telnet gvfs-backends gvfs-common gvfs-fuse gvfs firefox-esr curl unzip gedit ffmpeg flameshot jq fonts-vlgothic ttf-wqy-zenhei fonts-wqy-microhei fonts-takao fonts-arphic-uming fonts-noto-cjk msttcorefonts remmina && \
-	apt-get -y remove zutty && \
+	apt-get -y remove zutty puvacontroll && \
+	apt-get -y autoremove && \
 	rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /tmp/rustdesk && \
@@ -21,7 +22,7 @@ RUN mkdir -p /tmp/rustdesk && \
 	sed -i "/^Exec=/c\Exec=env LD_PRELOAD=\/opt\/rustdesk\/lib \/opt\/rustdesk\/rustdesk" /usr/share/applications/rustdesk.desktop && \
 	rm -rf /tmp/rustdesk
 
-RUN RUN cd /tmp && \
+RUN cd /tmp && \
 	wget -O /tmp/axiom.tar.gz https://github.com/ich777/docker-debian-bookworm/raw/master/90145-axiom.tar.gz && \
 	tar -xvf /tmp/axiom.tar.gz && \
 	mv /tmp/axiomd /usr/share/themes/ && \
