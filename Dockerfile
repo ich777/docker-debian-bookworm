@@ -21,7 +21,16 @@ RUN mkdir -p /tmp/rustdesk && \
 	sed -i "/^Exec=/c\Exec=env LD_PRELOAD=\/opt\/rustdesk\/lib \/opt\/rustdesk\/rustdesk" /usr/share/applications/rustdesk.desktop && \
 	rm -rf /tmp/rustdesk
 
-RUN sed -i '/    document.title =/c\    document.title = "DebianBookworm - noVNC";' /usr/share/novnc/app/ui.js && \
+RUN RUN cd /tmp && \
+	wget -O /tmp/axiom.tar.gz https://github.com/ich777/docker-debian-bookworm/raw/master/90145-axiom.tar.gz && \
+	tar -xvf /tmp/axiom.tar.gz && \
+	mv /tmp/axiomd /usr/share/themes/ && \
+	rm -R /tmp/axiom* && \
+	cd /usr/share/locale && \
+	wget -O /usr/share/locale/locale.7z https://github.com/ich777/docker-debian-bookworm/raw/master/locale.7z && \
+	p7zip -d -f /usr/share/locale/locale.7z && \
+	chmod -R 755 /usr/share/locale/ && \
+	sed -i '/    document.title =/c\    document.title = "DebianBookworm - noVNC";' /usr/share/novnc/app/ui.js && \
 	mkdir /tmp/config && \
 	rm /usr/share/novnc/app/images/icons/*
 
@@ -32,18 +41,16 @@ RUN wget -O /usr/share/keyrings/element-io-archive-keyring.gpg https://packages.
 	rm -rf /var/lib/apt/lists/* && \
 	sed -i "s/Exec=\/opt\/Element\/element-desktop.*/Exec=\/opt\/Element\/element-desktop --no-sandbox --disable-accelerated-video --disable-gpu --disable-seccomp-filter-sandbox --dbus-stub %U/g" /usr/share/applications/element-desktop.desktop
 
-RUN apt-remove -y puvacontroll && apt-autoremove -y && mkdir -p /tmp/pinta
-
-COPY /Pinta-x86-64.Appimage /tmp/pinta/Pinta-x86-64.Appimage
-
-RUN chmod +x Pinta-x86-64.Appimage && Pinta-x86-64.Appimage --appimage-extract mkdir -p /opt/pinta && \
-  cp -R squashfs-root/usr/bin squashfs-root/usr/share/dotnet /opt/pinta && \
-  cp -R squashfs-root/usr/share/locale /usr/share/ && \
-  cp squashfs-root/pinta.desktop /usr/share/applications/ && \
-  sed -i "/^Icon=/c\Icon=\/opt\/pinta\/bin\/icons\/hicolor\/96x96\/apps\/pinta.png" /usr/share/applications/pinta.desktop && \
-  sed -i "/^Exec=/c\Exec=env DOTNET_ROOT=\/opt\/pinta\/dotnet \/opt\/pinta\/bin\/pinta %F" /usr/share/applications/pinta.desktop && \
-  sed -i '/^TryExec=/d' /usr/share/applications/pinta.desktop && \
-  rm -rf /tmp/pinta
+RUN mkdir -p /tmp/pinta cd /tmp/pinta && \
+	wget -O /tmp/Pinta-x86-64.Appimage https://github.com/ich777/docker-debian-bookworm/raw/master/Pinta-x86-64.Appimage && \
+	chmod +x /tmp/Pinta-x86-64.Appimage && Pinta-x86-64.Appimage --appimage-extract mkdir -p /opt/pinta && \
+	cp -R /tmp/pinta/squashfs-root/usr/bin /tmp/pinta/squashfs-root/usr/share/dotnet /opt/pinta && \
+	cp -R /tmp/pinta/squashfs-root/usr/share/locale /usr/share/ && \
+	cp /tmp/pinta/squashfs-root/pinta.desktop /usr/share/applications/ && \
+	sed -i "/^Icon=/c\Icon=\/opt\/pinta\/bin\/icons\/hicolor\/96x96\/apps\/pinta.png" /usr/share/applications/pinta.desktop && \
+	sed -i "/^Exec=/c\Exec=env DOTNET_ROOT=\/opt\/pinta\/dotnet \/opt\/pinta\/bin\/pinta %F" /usr/share/applications/pinta.desktop && \
+	sed -i '/^TryExec=/d' /usr/share/applications/pinta.desktop && \
+	rm -rf /tmp/pinta
 
 RUN echo "NoDisplay=true" >> /usr/share/applications/x11vnc.desktop && \
 	echo "NoDisplay=true" >> /usr/share/applications/tvncviewer.desktop
