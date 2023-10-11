@@ -78,7 +78,7 @@ ADD /scripts/ /opt/scripts/
 COPY /config/ /tmp/config/
 RUN chmod -R 770 /opt/scripts/
 
-WORKDIR=$DATA_DIR
+WORKDIR $DATA_DIR
 
 EXPOSE 8080
 
