@@ -7,12 +7,22 @@ RUN export TZ=Europe/Rome && \
 	apt-get update && \
 	ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
 	echo $TZ > /etc/timezone && \
-	DEBIAN_FRONTEND=noninteractive apt-get -y install xfce4 xfce4-terminal xfce4-taskmanager dbus-x11 iputils-ping xarchiver bzip2 xz-utils unzip unrar zip binutils bash-completion procps traceroute telnet gvfs-backends gvfs-common gvfs-fuse gvfs firefox-esr curl unzip gedit ffmpeg flameshot jq fonts-vlgothic ttf-wqy-zenhei fonts-wqy-microhei fonts-takao fonts-arphic-uming fonts-noto-cjk msttcorefonts && \
+	DEBIAN_FRONTEND=noninteractive apt-get -y install xfce4 xfce4-terminal xfce4-taskmanager dbus-x11 iputils-ping xarchiver bzip2 xz-utils unzip unrar zip binutils bash-completion procps traceroute telnet gvfs-backends gvfs-common gvfs-fuse gvfs firefox-esr curl unzip gedit ffmpeg flameshot jq fonts-vlgothic ttf-wqy-zenhei fonts-wqy-microhei fonts-takao fonts-arphic-uming fonts-noto-cjk msttcorefonts remmina && \
 	apt-get -y remove zutty && \
 	rm -rf /var/lib/apt/lists/*
 
-RUN sed -i '/    document.title =/c\    document.title = "DebianBookwrom - noVNC";' /usr/share/novnc/app/ui.js && \
-#	mkdir /tmp/config && \
+RUN mkdir -p /tmp/rustdesk && \
+	RUSTDESK_V="$(wget -qO- https://api.github.com/repos/rustdesk/rustdesk/releases/latest | grep tag_name | cut -d '"' -f4)" && \
+	wget -O /tmp/rustdesk/rustdesk.tar.zst https://github.com/rustdesk/rustdesk/releases/download/${RUSTDESK_V}/rustdesk-${RUSTDESK_V}-0-x86_64.pkg.tar.zst && \
+	tar -C /tmp/rustdesk -xvf /tmp/rustdesk/rustdesk.tar.zst && \
+	mv /tmp/rustdesk/usr/lib/rustdesk /opt/ && mv /tmp/rustdesk/usr/share/icons/hicolor/256x256/apps/rustdesk.png /opt/rustdesk && \
+	mv /tmp/rustdesk/usr/share/rustdesk/files/rustdesk.desktop /usr/share/applications/ && \
+	sed -i "/^Icon=/c\Icon=\/opt\/rustdesk\/rustdesk.png" /usr/share/applications/rustdesk.desktop && \
+	sed -i "/^Exec=/c\Exec=env LD_PRELOAD=\/opt\/rustdesk\/lib \/opt\/rustdesk\/rustdesk" /usr/share/applications/rustdesk.desktop && \
+	rm -rf /tmp/rustdesk
+
+RUN sed -i '/    document.title =/c\    document.title = "DebianBookworm - noVNC";' /usr/share/novnc/app/ui.js && \
+	mkdir /tmp/config && \
 	rm /usr/share/novnc/app/images/icons/*
 
 RUN wget -O /usr/share/keyrings/element-io-archive-keyring.gpg https://packages.element.io/debian/element-io-archive-keyring.gpg && \
@@ -21,6 +31,22 @@ RUN wget -O /usr/share/keyrings/element-io-archive-keyring.gpg https://packages.
 	apt-get -y install element-desktop && \
 	rm -rf /var/lib/apt/lists/* && \
 	sed -i "s/Exec=\/opt\/Element\/element-desktop.*/Exec=\/opt\/Element\/element-desktop --no-sandbox --disable-accelerated-video --disable-gpu --disable-seccomp-filter-sandbox --dbus-stub %U/g" /usr/share/applications/element-desktop.desktop
+
+RUN apt-remove -y puvacontroll && apt-autoremove -y && mkdir -p /tmp/pinta
+
+COPY /Pinta-x86-64.Appimage /tmp/pinta/Pinta-x86-64.Appimage
+
+RUN chmod +x Pinta-x86-64.Appimage && Pinta-x86-64.Appimage --appimage-extract mkdir -p /opt/pinta && \
+  cp -R squashfs-root/usr/bin squashfs-root/usr/share/dotnet /opt/pinta && \
+  cp -R squashfs-root/usr/share/locale /usr/share/ && \
+  cp squashfs-root/pinta.desktop /usr/share/applications/ && \
+  sed -i "/^Icon=/c\Icon=\/opt\/pinta\/bin\/icons\/hicolor\/96x96\/apps\/pinta.png" /usr/share/applications/pinta.desktop && \
+  sed -i "/^Exec=/c\Exec=env DOTNET_ROOT=\/opt\/pinta\/dotnet \/opt\/pinta\/bin\/pinta %F" /usr/share/applications/pinta.desktop && \
+  sed -i '/^TryExec=/d' /usr/share/applications/pinta.desktop && \
+  rm -rf /tmp/pinta
+
+RUN echo "NoDisplay=true" >> /usr/share/applications/x11vnc.desktop && \
+	echo "NoDisplay=true" >> /usr/share/applications/tvncviewer.desktop
 
 ENV DATA_DIR=/debian
 ENV FORCE_UPDATE=""
@@ -49,9 +75,10 @@ RUN mkdir $DATA_DIR	&& \
 
 ADD /scripts/ /opt/scripts/
 #COPY /icons/* /usr/share/novnc/app/images/icons/
-#COPY /debianbullseye.png /usr/share/backgrounds/xfce/debian.png
-#COPY /config/ /tmp/config/
+COPY /config/ /tmp/config/
 RUN chmod -R 770 /opt/scripts/
+
+WORKDIR=$DATA_DIR
 
 EXPOSE 8080
 
