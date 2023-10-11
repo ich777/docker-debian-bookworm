@@ -1,3 +1,4 @@
+#!/bin/bash
 echo "---Ensuring UID: ${UID} matches user---"
 usermod -u ${UID} ${USER}
 echo "---Ensuring GID: ${GID} matches user---"
