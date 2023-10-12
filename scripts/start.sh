@@ -30,7 +30,7 @@ sed -i "/  <user>/c\  <user>${USER}</user>" /usr/share/dbus-1/system.conf
 
 echo "---Configuring Locales to: ${USER_LOCALES}---"
 LOCALE_GEN=$(head -n 1 /etc/locale.gen)
-export LOCALE_USR=$(echo ${USER_LOCALES} | cut -d ' ' -f 1)
+export LOCALE_USR="${USER_LOCALES%% *}"
 
 if [ "$LOCALE_GEN" != "${USER_LOCALES}" ]; then
 	rm /etc/locale.gen
