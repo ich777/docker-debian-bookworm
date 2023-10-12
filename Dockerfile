@@ -7,7 +7,7 @@ RUN export TZ=Europe/Rome && \
 	apt-get update && \
 	ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
 	echo $TZ > /etc/timezone && \
-	DEBIAN_FRONTEND=noninteractive apt-get -y install xfce4 xfce4-terminal xfce4-taskmanager dbus-x11 iputils-ping xarchiver bzip2 xz-utils unzip unrar zip binutils bash-completion procps traceroute telnet gvfs-backends gvfs-common gvfs-fuse gvfs firefox-esr curl unzip gedit ffmpeg flameshot jq fonts-vlgothic ttf-wqy-zenhei fonts-wqy-microhei fonts-takao fonts-arphic-uming fonts-noto-cjk msttcorefonts remmina nano && \
+	DEBIAN_FRONTEND=noninteractive apt-get -y install xfce4 xfce4-terminal xfce4-taskmanager dbus-x11 iputils-ping xarchiver bzip2 xz-utils unzip unrar zip binutils bash-completion procps traceroute telnet gvfs-backends gvfs-common gvfs-fuse gvfs firefox-esr curl unzip gedit ffmpeg flameshot jq fonts-vlgothic ttf-wqy-zenhei fonts-wqy-microhei fonts-takao fonts-arphic-uming fonts-noto-cjk msttcorefonts remmina nano libxdo3 && \
 	apt-get -y remove zutty pavucontrol && \
 	rm -rf /var/lib/apt/lists/*
 
@@ -42,8 +42,8 @@ RUN wget -O /usr/share/keyrings/element-io-archive-keyring.gpg https://packages.
 	sed -i "s/Exec=\/opt\/Element\/element-desktop.*/Exec=\/opt\/Element\/element-desktop --no-sandbox --disable-accelerated-video --disable-gpu --disable-seccomp-filter-sandbox --dbus-stub %U/g" /usr/share/applications/element-desktop.desktop
 
 RUN mkdir -p /tmp/pinta && cd /tmp/pinta && \
-	wget -O /tmp/Pinta-x86-64.AppImage https://github.com/ich777/docker-debian-bookworm/raw/master/Pinta-x86-64.AppImage && \
-	chmod +x /tmp/Pinta-x86-64.AppImage && /tmp/Pinta-x86-64.AppImage --appimage-extract && mkdir -p /opt/pinta && \
+	wget -O /tmp/pinta/Pinta-x86-64.AppImage https://github.com/ich777/docker-debian-bookworm/raw/master/Pinta-x86-64.AppImage && \
+	chmod +x /tmp/pinta/Pinta-x86-64.AppImage && /tmp/pinta/Pinta-x86-64.AppImage --appimage-extract && mkdir -p /opt/pinta && \
 	cp -R /tmp/pinta/squashfs-root/usr/bin /tmp/pinta/squashfs-root/usr/share/dotnet /opt/pinta && \
 	cp -R /tmp/pinta/squashfs-root/usr/share/locale /usr/share/ && \
 	cp /tmp/pinta/squashfs-root/pinta.desktop /usr/share/applications/ && \
