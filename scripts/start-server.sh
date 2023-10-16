@@ -33,6 +33,13 @@ fi
 if [ ! -d ${DATA_DIR}/.local/share/applications ]; then
 	mkdir -p ${DATA_DIR}/.local/share/applications
 fi
+if [ ! -d ${DATA_DIR}/.config/autostart ]; then
+	mkdir -p ${DATA_DIR}/.config/autostart
+fi
+if [ ! -f ${DATA_DIR}/.config/autostart/light-locker.desktop ]; then
+	echo "[Desktop Entry]
+Hidden=true" > ${DATA_DIR}/.config/autostart/light-locker.desktop
+fi
 
 echo "---Checking for old logfiles---"
 find ${DATA_DIR}/.logs -name "XvfbLog.*" -exec rm -f {} \;
