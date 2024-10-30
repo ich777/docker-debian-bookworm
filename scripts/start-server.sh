@@ -83,7 +83,7 @@ sleep 2
 
 echo "---Starting Desktop---"
 if [ "${DEV}" == "true" ]; then
-	xfce4-session
+	xfce4-session --display=${DISPLAY}
 else
-	xfce4-session 2> /dev/null
+	xfce4-session --display=${DISPLAY} 2> /dev/null
 fi
