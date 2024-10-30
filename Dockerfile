@@ -1,4 +1,4 @@
-FROM ich777/novnc-baseimage
+FROM ich777/kasmvnc-baseimage
 
 LABEL org.opencontainers.image.authors="admin@minenet.at"
 LABEL org.opencontainers.image.source="https://github.com/ich777/docker-debian-bookworm"
@@ -8,7 +8,7 @@ RUN export TZ=Europe/Rome && \
 	ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
 	echo $TZ > /etc/timezone && \
 	DEBIAN_FRONTEND=noninteractive apt-get -y install xfce4 xfce4-terminal xfce4-taskmanager dbus-x11 iputils-ping xarchiver bzip2 xz-utils unzip unrar zip binutils bash-completion procps traceroute telnet gvfs-backends gvfs-common gvfs-fuse gvfs firefox-esr curl unzip gedit ffmpeg flameshot jq fonts-vlgothic ttf-wqy-zenhei fonts-wqy-microhei fonts-takao fonts-arphic-uming fonts-noto-cjk msttcorefonts remmina nano libxdo3 ssh peek && \
-	apt-get -y remove zutty pavucontrol && \
+	apt-get -y remove vim zutty pavucontrol && \
 	rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /tmp/rustdesk && \
@@ -29,17 +29,14 @@ RUN cd /tmp && \
 	cd /usr/share/locale && \
 	wget -O /usr/share/locale/locale.7z https://github.com/ich777/docker-debian-bookworm/raw/master/locale.7z && \
 	p7zip -d -f /usr/share/locale/locale.7z && \
-	chmod -R 755 /usr/share/locale/ && \
-	sed -i '/    document.title =/c\    document.title = "DebianBookworm - noVNC";' /usr/share/novnc/app/ui.js && \
-	mkdir /tmp/config && \
-	rm /usr/share/novnc/app/images/icons/*
+	chmod -R 755 /usr/share/locale/
 
 RUN wget -O /usr/share/keyrings/element-io-archive-keyring.gpg https://packages.element.io/debian/element-io-archive-keyring.gpg && \
 	echo "deb [signed-by=/usr/share/keyrings/element-io-archive-keyring.gpg] https://packages.element.io/debian/ default main" | tee /etc/apt/sources.list.d/element-io.list && \
 	apt-get update && \
 	apt-get -y install element-desktop && \
 	rm -rf /var/lib/apt/lists/* && \
-	sed -i "s/Exec=\/opt\/Element\/element-desktop.*/Exec=\/opt\/Element\/element-desktop --no-sandbox --disable-accelerated-video --disable-gpu --disable-seccomp-filter-sandbox --dbus-stub %U/g" /usr/share/applications/element-desktop.desktop
+	sed -i "s/Exec=\/opt\/Element\/element-desktop.*/Exec=\/opt\/Element\/element-desktop --no-sandbox --disable-seccomp-filter-sandbox --dbus-stub %U/g" /usr/share/applications/element-desktop.desktop
 
 RUN mkdir -p /tmp/pinta && cd /tmp/pinta && \
 	wget -O /tmp/pinta/Pinta-x86-64.AppImage https://github.com/ich777/docker-debian-bookworm/raw/master/Pinta-x86-64.AppImage && \
@@ -52,20 +49,18 @@ RUN mkdir -p /tmp/pinta && cd /tmp/pinta && \
 	sed -i '/^TryExec=/d' /usr/share/applications/pinta.desktop && \
 	rm -rf /tmp/pinta
 
-RUN echo "NoDisplay=true" >> /usr/share/applications/x11vnc.desktop && \
-	echo "NoDisplay=true" >> /usr/share/applications/tvncviewer.desktop
+RUN systemctl set-default multi-user.target
 
 ENV DATA_DIR=/debian
 ENV FORCE_UPDATE=""
-ENV CUSTOM_RES_W=1280
-ENV CUSTOM_RES_H=720
-ENV CUSTOM_DEPTH=16
-ENV NOVNC_PORT=8080
-ENV RFB_PORT=5900
-ENV TURBOVNC_PARAMS="-securitytypes none"
-ENV NOVNC_RESIZE=""
-ENV NOVNC_QUALITY=""
-ENV NOVNC_COMPRESSION=""
+ENV DEPTH=16
+ENV HW3D="true"
+ENV DRINODE="/dev/dri/renderD128"
+ENV FRAMERATE=30
+ENV PORT=8080
+ENV KASMVNC_PARAMS="-DisableBasicAuth -PreferBandwidth -FreeKeyMappings -DLP_ClipDelay=0"
+ENV KASM_AMDIN_PASSWD="password"
+ENV RECT_THREADS=1
 ENV UMASK=000
 ENV UID=99
 ENV GID=100
@@ -81,7 +76,6 @@ RUN mkdir $DATA_DIR	&& \
 	ulimit -n 2048
 
 ADD /scripts/ /opt/scripts/
-COPY /icons/* /usr/share/novnc/app/images/icons/
 COPY /config/ /tmp/config/
 RUN chmod -R 770 /opt/scripts/
 
