@@ -40,6 +40,20 @@ if [ ! -f ${DATA_DIR}/.config/autostart/light-locker.desktop ]; then
 	echo "[Desktop Entry]
 Hidden=true" > ${DATA_DIR}/.config/autostart/light-locker.desktop
 fi
+if [ "${HW3D}" == "true" ]; then
+  HWACCELL="-hw3d -drinode ${DRINODE} "
+fi
+if [ ! -f ${DATA_DIR}/.kasmpasswd ]; then
+  echo -e "${KASM_AMDIN_PASSWD}\n${KASM_AMDIN_PASSWD}\n" | kasmvncpasswd -u admin -w
+fi
+unset KASM_AMDIN_PASSWD
+
+if [ ! -f ${DATA_DIR}/.vnc/.de-was-selected ]; then
+  if [ ! -d ${DATA_DIR}/.vnc ]; then
+    mkdir -p ${DATA_DIR}/.vnc
+  fi
+  touch ${DATA_DIR}/.vnc/.de-was-selected
+fi
 
 echo "---Checking for old logfiles---"
 find ${DATA_DIR}/.logs -name "XvfbLog.*" -exec rm -f {} \;
@@ -47,12 +61,11 @@ find ${DATA_DIR}/.logs -name "x11vncLog.*" -exec rm -f {} \;
 echo "---Checking for old lock files---"
 rm -rf /tmp/.X99*
 rm -rf /tmp/.X11*
-rm -rf ${DATA_DIR}/.vnc/*.log ${DATA_DIR}/.vnc/*.pid 
+rm -rf ${DATA_DIR}/.vnc/*.log ${DATA_DIR}/.vnc/*.pid
 chmod -R ${DATA_PERM} ${DATA_DIR}
-if [ -f ${DATA_DIR}/.vnc/passwd ]; then
-	chmod 600 ${DATA_DIR}/.vnc/passwd
-fi
-screen -wipe 2&>/dev/null
+chmod 600 ${DATA_DIR}/.kasmpasswd
+chown ${UID}:${GID} ${DATA_DIR}/.kasmpasswd
+
 find /var/run/dbus -name "pid" -exec rm -f {} \;
 
 echo "---Starting dbus service---"
@@ -64,12 +77,8 @@ else
 fi
 sleep 2
 
-echo "---Starting TurboVNC server---"
-vncserver -geometry ${CUSTOM_RES_W}x${CUSTOM_RES_H} -depth ${CUSTOM_DEPTH} :99 -rfbport ${RFB_PORT} -noxstartup ${TURBOVNC_PARAMS} 2>/dev/null
-sleep 2
-
-echo "---Starting noVNC server---"
-websockify -D --web=/usr/share/novnc/ --cert=/etc/ssl/novnc.pem ${NOVNC_PORT} localhost:${RFB_PORT}
+echo "---Starting KasmVNC---"
+vncserver ${DISPLAY} ${HWACCELL}-FrameRate=${FRAMERATE} -interface 0.0.0.0 -depth ${DEPTH} -RectThreads ${RECT_THREADS} -noxstartup ${KASMVNC_PARAMS}
 sleep 2
 
 echo "---Starting Desktop---"
