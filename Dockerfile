@@ -53,7 +53,7 @@ RUN systemctl set-default multi-user.target
 
 ENV DATA_DIR=/debian
 ENV FORCE_UPDATE=""
-ENV DEPTH=16
+ENV DEPTH=24
 ENV HW3D="true"
 ENV DRINODE="/dev/dri/renderD128"
 ENV FRAMERATE=30
