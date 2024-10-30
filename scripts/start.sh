@@ -45,6 +45,8 @@ else
 	echo "---Locales set correctly, continuing---"
 fi
 
+sed -i "/^  websocket_port: /c\\  websocket_port: ${KASMVNC_PORT}" /usr/share/kasmvnc/kasmvnc_defaults.yaml
+
 echo "---Taking ownership of data...---"
 rm -R ${DATA_DIR}/.dbus/session-bus/* 2> /dev/null
 if [ ! -d /var/run/dbus ]; then
