@@ -29,6 +29,7 @@ RUN cd /tmp && \
 	cd /usr/share/locale && \
 	wget -O /usr/share/locale/locale.7z https://github.com/ich777/docker-debian-bookworm/raw/master/locale.7z && \
 	p7zip -d -f /usr/share/locale/locale.7z && \
+	sed -i '/    document.title =/c\    document.title = "DebianBookworm - KasmVNC";' /usr/share/kasmvnc/www/app/ui.js && \
 	chmod -R 755 /usr/share/locale/
 
 RUN wget -O /usr/share/keyrings/element-io-archive-keyring.gpg https://packages.element.io/debian/element-io-archive-keyring.gpg && \
@@ -76,6 +77,7 @@ RUN mkdir $DATA_DIR	&& \
 	ulimit -n 2048
 
 ADD /scripts/ /opt/scripts/
+COPY /icons/* /usr/share/novnc/app/images/icons/
 COPY /config/ /tmp/config/
 RUN chmod -R 770 /opt/scripts/
 
