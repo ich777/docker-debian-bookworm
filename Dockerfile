@@ -7,7 +7,7 @@ RUN export TZ=Europe/Rome && \
 	apt-get update && \
 	ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
 	echo $TZ > /etc/timezone && \
-	DEBIAN_FRONTEND=noninteractive apt-get -y install xfce4 xfce4-terminal xfce4-taskmanager dbus-x11 iputils-ping xarchiver bzip2 xz-utils unzip unrar zip binutils bash-completion procps traceroute telnet gvfs-backends gvfs-common gvfs-fuse gvfs firefox-esr curl unzip gedit ffmpeg flameshot jq fonts-vlgothic ttf-wqy-zenhei fonts-wqy-microhei fonts-takao fonts-arphic-uming fonts-noto-cjk msttcorefonts remmina nano libxdo3 ssh peek && \
+	DEBIAN_FRONTEND=noninteractive apt-get -y install xfce4 xfce4-terminal xfce4-taskmanager dbus-x11 iputils-ping xarchiver bzip2 xz-utils unzip unrar zip binutils bash-completion procps traceroute telnet gvfs-backends gvfs-common gvfs-fuse gvfs firefox-esr curl unzip gedit ffmpeg flameshot jq fonts-vlgothic ttf-wqy-zenhei fonts-wqy-microhei fonts-takao fonts-arphic-uming fonts-noto-cjk msttcorefonts remmina nano libxdo3 ssh peek x11vnc && \
 	apt-get -y remove vim zutty pavucontrol && \
 	rm -rf /var/lib/apt/lists/*
 
@@ -61,6 +61,9 @@ ENV FRAMERATE=30
 ENV KASMVNC_PORT=8080
 ENV KASMVNC_PARAMS="-DisableBasicAuth -PreferBandwidth -FreeKeyMappings -DLP_ClipDelay=0"
 ENV KASM_AMDIN_PASSWD="password"
+ENV X11VNC="false"
+ENV X11VNC_PARAMS="-forever -shared"
+ENV RFB_PORT=5900
 ENV RECT_THREADS=1
 ENV UMASK=000
 ENV UID=99
