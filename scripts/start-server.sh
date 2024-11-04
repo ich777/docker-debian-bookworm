@@ -84,6 +84,9 @@ sleep 2
 if [ "${X11VNC}" == "true" ]; then
   echo "---Starting x11vnc on port: ${RFB_PORT}---"
   /opt/scripts/start-x11.sh >/dev/null 2>&1 &
+  if [ -f ${DATA_DIR}/.vnc/passwd ]; then
+	chmod 600 ${DATA_DIR}/.vnc/passwd
+  fi
 fi
 
 echo "---Starting Desktop---"
