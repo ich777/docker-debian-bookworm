@@ -81,6 +81,11 @@ echo "---Starting KasmVNC---"
 vncserver ${DISPLAY} ${HWACCELL}-FrameRate=${FRAMERATE} -interface 0.0.0.0 -depth ${DEPTH} -RectThreads ${RECT_THREADS} -noxstartup ${KASMVNC_PARAMS} >/dev/null 2>&1
 sleep 2
 
+if [ "${X11VNC}" == "true" ]; then
+  echo "---Starting x11vnc on port: ${RFP_PORT}---"
+  /opt/scripts/start-x11.sh &
+fi
+
 echo "---Starting Desktop---"
 if [ "${DEV}" == "true" ]; then
 	xfce4-session --display=${DISPLAY}
