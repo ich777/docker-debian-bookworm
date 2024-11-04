@@ -7,7 +7,7 @@ RUN export TZ=Europe/Rome && \
 	apt-get update && \
 	ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
 	echo $TZ > /etc/timezone && \
-	DEBIAN_FRONTEND=noninteractive apt-get -y install kde-plasma-desktop dbus-x11 iputils-ping bzip2 xz-utils unzip unrar zip binutils bash-completion procps traceroute telnet firefox-esr curl unzip ffmpeg flameshot jq fonts-vlgothic ttf-wqy-zenhei fonts-wqy-microhei fonts-takao fonts-arphic-uming fonts-noto-cjk msttcorefonts remmina nano libxdo3 ssh peek x11vnc && \
+	DEBIAN_FRONTEND=noninteractive apt-get -y install kde-plasma-desktop dbus-x11 iputils-ping bzip2 xz-utils unzip unrar zip p7zip binutils bash-completion procps traceroute telnet firefox-esr curl unzip ffmpeg flameshot jq fonts-vlgothic ttf-wqy-zenhei fonts-wqy-microhei fonts-takao fonts-arphic-uming fonts-noto-cjk msttcorefonts remmina nano libxdo3 ssh peek x11vnc && \
 	apt-get -y remove vim zutty pavucontrol && \
 	rm -rf /var/lib/apt/lists/*
 
