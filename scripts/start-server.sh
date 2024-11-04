@@ -82,7 +82,7 @@ vncserver ${DISPLAY} ${HWACCELL}-FrameRate=${FRAMERATE} -interface 0.0.0.0 -dept
 sleep 2
 
 if [ "${X11VNC}" == "true" ]; then
-  echo "---Starting x11vnc on port: ${RFP_PORT}---"
+  echo "---Starting x11vnc on port: ${RFB_PORT}---"
   /opt/scripts/start-x11.sh >/dev/null 2>&1 &
 fi
 
