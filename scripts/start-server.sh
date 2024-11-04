@@ -91,7 +91,7 @@ fi
 
 echo "---Starting Desktop---"
 if [ "${DEV}" == "true" ]; then
-	xfce4-session --display=${DISPLAY}
+	plasma_session --no-lockscreen
 else
-	xfce4-session --display=${DISPLAY} 2> /dev/null
+	plasma_session --no-lockscreen 2> /dev/null
 fi
