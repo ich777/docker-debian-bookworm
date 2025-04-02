@@ -16,7 +16,7 @@ RUN mkdir -p /tmp/rustdesk && \
 	wget -O /tmp/rustdesk/rustdesk.tar.zst https://github.com/rustdesk/rustdesk/releases/download/${RUSTDESK_V}/rustdesk-${RUSTDESK_V}-0-x86_64.pkg.tar.zst && \
 	tar -C /tmp/rustdesk -xvf /tmp/rustdesk/rustdesk.tar.zst && \
 	mv /tmp/rustdesk/usr/share/rustdesk /opt/ && mv /tmp/rustdesk/usr/share/icons/hicolor/256x256/apps/rustdesk.png /opt/rustdesk && \
-	mv /opt/rustdesk/rustdesk/files/rustdesk.desktop /usr/share/applications/ && \
+	mv /opt/rustdesk/files/rustdesk.desktop /usr/share/applications/ && \
 	sed -i "/^Icon=/c\Icon=\/opt\/rustdesk\/rustdesk.png" /usr/share/applications/rustdesk.desktop && \
 	sed -i "/^Exec=/c\Exec=env LD_PRELOAD=\/opt\/rustdesk\/lib \/opt\/rustdesk\/rustdesk" /usr/share/applications/rustdesk.desktop && \
 	sed -i '/Desktop Action new-window/,$d' /usr/share/applications/rustdesk.desktop  && \
