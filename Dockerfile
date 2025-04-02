@@ -15,11 +15,12 @@ RUN mkdir -p /tmp/rustdesk && \
 	RUSTDESK_V="$(wget -qO- https://api.github.com/repos/rustdesk/rustdesk/releases/latest | grep tag_name | cut -d '"' -f4)" && \
 	wget -O /tmp/rustdesk/rustdesk.tar.zst https://github.com/rustdesk/rustdesk/releases/download/${RUSTDESK_V}/rustdesk-${RUSTDESK_V}-0-x86_64.pkg.tar.zst && \
 	tar -C /tmp/rustdesk -xvf /tmp/rustdesk/rustdesk.tar.zst && \
-	mv /tmp/rustdesk/usr/lib/rustdesk /opt/ && mv /tmp/rustdesk/usr/share/icons/hicolor/256x256/apps/rustdesk.png /opt/rustdesk && \
-	mv /tmp/rustdesk/usr/share/rustdesk/files/rustdesk.desktop /usr/share/applications/ && \
+	mv /tmp/rustdesk/usr/share/rustdesk /opt/ && mv /tmp/rustdesk/usr/share/icons/hicolor/256x256/apps/rustdesk.png /opt/rustdesk && \
+	mv /opt/rustdesk/rustdesk/files/rustdesk.desktop /usr/share/applications/ && \
 	sed -i "/^Icon=/c\Icon=\/opt\/rustdesk\/rustdesk.png" /usr/share/applications/rustdesk.desktop && \
 	sed -i "/^Exec=/c\Exec=env LD_PRELOAD=\/opt\/rustdesk\/lib \/opt\/rustdesk\/rustdesk" /usr/share/applications/rustdesk.desktop && \
-	rm -rf /tmp/rustdesk
+	sed -i '/Desktop Action new-window/,$d' /usr/share/applications/rustdesk.desktop  && \
+	rm -rf /tmp/rustdesk /opt/rustdesk/files
 
 RUN cd /tmp && \
 	wget -O /tmp/axiom.tar.gz https://github.com/ich777/docker-debian-bookworm/raw/master/90145-axiom.tar.gz && \
